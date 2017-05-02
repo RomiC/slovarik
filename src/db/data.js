@@ -80,7 +80,6 @@ export const words = [
   }
 ];
 
-
 export const translations = [
   {
     id: '1',

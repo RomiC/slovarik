@@ -10,11 +10,13 @@ export default new GraphQLObjectType({
   fields: {
     id: {
       type: GraphQLID,
-      description: 'Word ID'
+      description: 'Word ID',
+      resolve: (w) => w.id
     },
     word: {
       type: GraphQLString,
-      description: 'Word value'
+      description: 'Word value',
+      resolve: (w) => w.word
     }
   }
 });
