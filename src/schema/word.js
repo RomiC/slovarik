@@ -7,6 +7,8 @@ import {
 
 import { word } from '../db';
 
+import { schema as TranslationType } from './translation';
+
 export const schema = new GraphQLObjectType({
   name: 'Word',
   description: 'Word in vocabulary',
@@ -20,6 +22,11 @@ export const schema = new GraphQLObjectType({
       type: GraphQLString,
       description: 'Word value',
       resolve: (w) => w.word
+    },
+    translations: {
+      type: new GraphQLList(TranslationType),
+      description: 'Word\'s translations',
+      resolve: (w) => w.getTranslations()
     }
   }
 });

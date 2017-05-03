@@ -7,6 +7,8 @@ import {
 
 import { user } from '../db';
 
+import { schema as WordType } from './word';
+
 export const schema = new GraphQLObjectType({
   name: 'User',
   description: 'User type',
@@ -20,6 +22,11 @@ export const schema = new GraphQLObjectType({
       type: GraphQLString,
       description: 'User login',
       resolve: (u) => u.login
+    },
+    words: {
+      type: new GraphQLList(WordType),
+      description: 'User\'s words',
+      resolve: (u) => u.getWords()
     }
   }
 });
