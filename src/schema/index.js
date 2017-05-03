@@ -4,14 +4,16 @@ import {
 } from 'graphql';
 
 import { query as userQuery } from './user';
-// import wordType from './word';
-// import translationType from './translation';
+import { query as wordQuery } from './word';
+import { query as translationQuery } from './translation';
 
 const queryType = new GraphQLObjectType({
   name: 'RootQuery',
   description: 'The root query type',
   fields: {
-    users: userQuery
+    users: userQuery,
+    words: wordQuery,
+    traslations: translationQuery
   }
 });
 
