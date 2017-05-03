@@ -4,8 +4,8 @@ import {
   GraphQLString,
   GraphQLList
 } from 'graphql';
-import { filter } from 'lodash';
-import { users } from '../db/data';
+
+import { user } from '../db';
 
 export const schema = new GraphQLObjectType({
   name: 'User',
@@ -35,8 +35,7 @@ export const query = {
     login: {
       type: GraphQLString,
       description: 'User Login to search'
-    },
-    resolve: (_, args) => 
+    }
   },
-  resolve: (_, args) => Promise.resolve(filter(users, args))
+  resolve: (_, args) => user.findAll({ where: args })
 };
