@@ -1,6 +1,7 @@
 import {
   GraphQLObjectType,
   GraphQLList,
+  GraphQLNonNull,
   GraphQLID,
   GraphQLString
 } from 'graphql';
@@ -42,3 +43,34 @@ export const query = {
   },
   resolve: (_, args) => word.findAll({ where: args })
 };
+
+export const mutation = {
+  addWord: {
+    type: schema,
+    description: 'Add new word to user vocabulary',
+    args: {
+      userId: {
+        type: new GraphQLNonNull(GraphQLID),
+        description: 'User ID'
+      },
+      word: {
+        type: new GraphQLNonNull(GraphQLString),
+        description: 'Word to add'
+      },
+      translations: {
+        type: new GraphQLList(GraphQLString),
+        description: 'Translations for the word'
+      }
+    },
+    resolve: (_, args) =>
+      word.create({ word: args.word, userId: args.userId })
+        .then((w) => {
+          if (!!args.translations && args.translations.length > 0) {
+            return Promise.all(args.translations.map((t) => w.addTranslation({translation: t})))
+              .then(() => Promise.resolve(w));
+          } else {
+            return w;
+          }
+        })
+  }
+}

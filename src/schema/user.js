@@ -1,5 +1,6 @@
 import {
   GraphQLObjectType,
+  GraphQLNonNull,
   GraphQLID,
   GraphQLString,
   GraphQLList
@@ -45,4 +46,18 @@ export const query = {
     }
   },
   resolve: (_, args) => user.findAll({ where: args })
+};
+
+export const mutation = {
+  addUser: {
+    type: schema,
+    description: 'Add to user',
+    args: {
+      login: {
+        type: new GraphQLNonNull(GraphQLString),
+        description: 'New user login'
+      }
+    },
+    resolve: (_, args) => user.create(args)
+  }
 };

@@ -5,15 +5,51 @@ const DATABASE_URL = process.env.DATABASE_URL || 'postgres://xzrqyaie:nikytyoKQU
 const db = new Sequelize(DATABASE_URL);
 
 export const user = db.define('user', {
+  id: {
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    primaryKey: true
+  },
   login: Sequelize.STRING
+}, {
+  indexes: [
+    {
+      unique: true,
+      fields: ['login']
+    }
+  ]
 });
 
 export const word = db.define('word', {
-  word: Sequelize.STRING
+  id: {
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    primaryKey: true
+  },
+  word: Sequelize.STRING,
+}, {
+  indexes: [
+    {
+      fields: ['userId'],
+      using: 'BTREE'
+    }
+  ]
 });
 
 export const translation = db.define('translation', {
+  id: {
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    primaryKey: true
+  },
   translation: Sequelize.STRING
+}, {
+  indexes: [
+    {
+      fields: ['wordId'],
+      using: 'BTREE'
+    }
+  ]
 });
 
 user.hasMany(word);
