@@ -25,6 +25,17 @@ export const schema = new GraphQLObjectType({
   }
 });
 
+export const schemaDelete = new GraphQLObjectType({
+  name: 'TranslationDeleted',
+  description: 'Translation deleted type',
+  fields: {
+    id: {
+      type: GraphQLID,
+      description: 'ID of deleted translation'
+    }
+  }
+});
+
 export const query = {
   type: new GraphQLList(schema),
   description: 'Search for word translation',
@@ -34,7 +45,10 @@ export const query = {
       description: 'Word translation'
     }
   },
-  resolve: (_, args) => translation.findAll({ where: args })
+  resolve: (_, args, context) => {
+    console.log(context);
+    return translation.findAll({ where: args });
+  }
 };
 
 export const mutation = {
@@ -53,4 +67,16 @@ export const mutation = {
     },
     resolve: (_, args) => translation.create(args)
   },
+  deleteTranslation: {
+    type: schemaDelete,
+    description: 'Delete translation of the word',
+    args: {
+      translationId: {
+        type: new GraphQLNonNull(GraphQLID),
+        description: 'Translation ID to delete'
+      }
+    },
+    resolve: (_, args) => translation.destroy({ where: { id: args.translationId } })
+      .then(() => ({ id: args.wordId }))
+  }
 };

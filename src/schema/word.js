@@ -32,6 +32,16 @@ export const schema = new GraphQLObjectType({
   }
 });
 
+export const deleteSchema = new GraphQLObjectType({
+  name: 'WordDelete',
+  fields: {
+    id: {
+      type: GraphQLID,
+      description: 'ID od deleted word'
+    }
+  }
+});
+
 export const query = {
   type: new GraphQLList(schema),
   description: 'Search for the word',
@@ -62,15 +72,26 @@ export const mutation = {
         description: 'Translations for the word'
       }
     },
-    resolve: (_, args) =>
-      word.create({ word: args.word, userId: args.userId })
-        .then((w) => {
-          if (!!args.translations && args.translations.length > 0) {
-            return Promise.all(args.translations.map((t) => w.addTranslation({translation: t})))
-              .then(() => Promise.resolve(w));
-          } else {
-            return w;
-          }
-        })
+    resolve: (_, args) => word.create({ word: args.word, userId: args.userId })
+      .then((w) => {
+        if (!!args.translations && args.translations.length > 0) {
+          return Promise.all(args.translations.map((t) => w.createTranslation({ translation: t })))
+            .then(() => w);
+        } else {
+          return w;
+        }
+      })
+  },
+  deleteWord: {
+    type: deleteSchema,
+    description: 'Delete word with all its translations',
+    args: {
+      wordId: {
+        type: new GraphQLNonNull(GraphQLID),
+        description: 'ID word to delete'
+      }
+    },
+    resolve: (_, args) => word.destroy({ where: { id: args.wordId } })
+      .then(() => ({ id: args.wordId }))
   }
-}
+};

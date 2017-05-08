@@ -52,9 +52,19 @@ export const translation = db.define('translation', {
   ]
 });
 
-user.hasMany(word);
+user.hasMany(word, {
+  foreignKey: {
+    allowNull: false
+  },
+  onDelete: 'CASCADE'
+});
 word.belongsTo(user);
-word.hasMany(translation);
+word.hasMany(translation, {
+  foreignKey: {
+    allowNull: false
+  },
+  onDelete: 'CASCADE'
+});
 translation.belongsTo(word);
 
 export default db;

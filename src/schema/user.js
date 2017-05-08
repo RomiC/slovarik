@@ -16,7 +16,7 @@ export const schema = new GraphQLObjectType({
   fields: {
     id: {
       type: GraphQLID,
-      description: 'The id of the user',
+      description: 'User ID',
       resolve: (u) => u.id
     },
     login: {
@@ -28,6 +28,17 @@ export const schema = new GraphQLObjectType({
       type: new GraphQLList(WordType),
       description: 'User\'s words',
       resolve: (u) => u.getWords()
+    }
+  }
+});
+
+export const schemaDelete = new GraphQLObjectType({
+  name: 'UserDelete',
+  description: 'User delete type',
+  fields: {
+    id: {
+      type: GraphQLID,
+      description: 'Deleted User ID'
     }
   }
 });
@@ -51,7 +62,7 @@ export const query = {
 export const mutation = {
   addUser: {
     type: schema,
-    description: 'Add to user',
+    description: 'Add user',
     args: {
       login: {
         type: new GraphQLNonNull(GraphQLString),
@@ -59,5 +70,17 @@ export const mutation = {
       }
     },
     resolve: (_, args) => user.create(args)
+  },
+  deleteUser: {
+    type: schemaDelete,
+    description: 'Delete user',
+    args: {
+      userId: {
+        type: new GraphQLNonNull(GraphQLID),
+        description: 'User ID to delete'
+      } 
+    },
+    resolve: (_, args) => user.destroy({ where: { id: args.userId } })
+      .then(() => ({ id: args.userId }))
   }
 };
