@@ -1,20 +1,20 @@
-import {
+const {
   GraphQLSchema,
   GraphQLObjectType
-} from 'graphql';
+} = require('graphql');
 
-import {
-  query as userQuery,
-  mutation as userMutation
-} from './user';
-import {
-  query as wordQuery,
-  mutation as wordMutation
-} from './word';
-import {
-  query as translationQuery,
-  mutation as translationMutation
-} from './translation';
+const {
+  query: userQuery,
+  mutation: userMutation
+} = require('./user');
+const {
+  query: wordQuery,
+  mutation: wordMutation
+} = require('./word');
+const {
+  query: translationQuery,
+  mutation: translationMutation
+} = require('./translation');
 
 const queryType = new GraphQLObjectType({
   name: 'RootQuery',
@@ -36,7 +36,7 @@ const mutationType = new GraphQLObjectType({
   )
 });
 
-export default new GraphQLSchema({
+module.exports.default = new GraphQLSchema({
   query: queryType,
   mutation: mutationType
 });

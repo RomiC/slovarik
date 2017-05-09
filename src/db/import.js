@@ -1,10 +1,10 @@
-import {
-  default as db,
+const {
+  default: db,
   user
-} from './index';
-import { users } from './data';
+} = require('./index');
+const { users } = require('./data');
 
-export default () =>
+module.exports.default = () =>
   db.sync({ force: true })
     .then(() => Promise.all(users.map((u) =>
       user.create({ login: u.login })

@@ -1,16 +1,16 @@
-import {
+const {
   GraphQLObjectType,
   GraphQLList,
   GraphQLNonNull,
   GraphQLID,
   GraphQLString
-} from 'graphql';
+} = require('graphql');
 
-import { word } from '../db';
+const { word } = require('../db');
 
-import { schema as TranslationType } from './translation';
+const { schema: TranslationType } = require('./translation');
 
-export const schema = new GraphQLObjectType({
+const schema = new GraphQLObjectType({
   name: 'Word',
   description: 'Word in vocabulary',
   fields: {
@@ -32,7 +32,7 @@ export const schema = new GraphQLObjectType({
   }
 });
 
-export const deleteSchema = new GraphQLObjectType({
+const schemaDelete = new GraphQLObjectType({
   name: 'WordDelete',
   fields: {
     id: {
@@ -42,7 +42,7 @@ export const deleteSchema = new GraphQLObjectType({
   }
 });
 
-export const query = {
+const query = {
   type: new GraphQLList(schema),
   description: 'Search for the word',
   args: {
@@ -54,7 +54,7 @@ export const query = {
   resolve: (_, args) => word.findAll({ where: args })
 };
 
-export const mutation = {
+const mutation = {
   addWord: {
     type: schema,
     description: 'Add new word to user vocabulary',
@@ -83,7 +83,7 @@ export const mutation = {
       })
   },
   deleteWord: {
-    type: deleteSchema,
+    type: schemaDelete,
     description: 'Delete word with all its translations',
     args: {
       wordId: {
@@ -94,4 +94,11 @@ export const mutation = {
     resolve: (_, args) => word.destroy({ where: { id: args.wordId } })
       .then(() => ({ id: args.wordId }))
   }
+};
+
+module.exports = {
+  schema,
+  schemaDelete,
+  query,
+  mutation
 };

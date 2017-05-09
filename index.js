@@ -1,8 +1,8 @@
-import express from 'express';
-import graphqlHTTP from 'express-graphql';
+const express = require('express');
+const graphqlHTTP = require('express-graphql');
 
-import schema from './src/schema';
-import importDb from './src/db/import';
+const { default: schema } = require('./src/schema');
+const { default: importDb } = require('./src/db/import');
 
 const PORT = process.env.PORT || 3000;
 const server = express();

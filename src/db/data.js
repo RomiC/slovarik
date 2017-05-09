@@ -1,4 +1,4 @@
-export const users = [
+module.exports.users = [
   {
     login: 'romic',
     words: [

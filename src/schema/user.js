@@ -1,16 +1,16 @@
-import {
+const {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLID,
   GraphQLString,
   GraphQLList
-} from 'graphql';
+} = require('graphql');
 
-import { user } from '../db';
+const { user } = require('../db');
 
-import { schema as WordType } from './word';
+const { schema: WordType } = require('./word');
 
-export const schema = new GraphQLObjectType({
+const schema = new GraphQLObjectType({
   name: 'User',
   description: 'User type',
   fields: {
@@ -32,7 +32,7 @@ export const schema = new GraphQLObjectType({
   }
 });
 
-export const schemaDelete = new GraphQLObjectType({
+const schemaDelete = new GraphQLObjectType({
   name: 'UserDelete',
   description: 'User delete type',
   fields: {
@@ -43,7 +43,7 @@ export const schemaDelete = new GraphQLObjectType({
   }
 });
 
-export const query = {
+const query = {
   type: new GraphQLList(schema),
   description: 'Search for the user',
   args: {
@@ -59,7 +59,7 @@ export const query = {
   resolve: (_, args) => user.findAll({ where: args })
 };
 
-export const mutation = {
+const mutation = {
   addUser: {
     type: schema,
     description: 'Add user',
@@ -83,4 +83,11 @@ export const mutation = {
     resolve: (_, args) => user.destroy({ where: { id: args.userId } })
       .then(() => ({ id: args.userId }))
   }
+};
+
+module.exports = {
+  schema,
+  schemaDelete,
+  query,
+  mutation
 };

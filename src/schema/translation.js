@@ -1,14 +1,14 @@
-import {
+const {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLList,
   GraphQLID,
   GraphQLString
-} from 'graphql';
+} = require('graphql');
 
-import { translation } from '../db';
+const { translation } = require('../db');
 
-export const schema = new GraphQLObjectType({
+const schema = new GraphQLObjectType({
   name: 'Translation',
   description: 'Translation of the word',
   fields: {
@@ -25,7 +25,7 @@ export const schema = new GraphQLObjectType({
   }
 });
 
-export const schemaDelete = new GraphQLObjectType({
+const schemaDelete = new GraphQLObjectType({
   name: 'TranslationDeleted',
   description: 'Translation deleted type',
   fields: {
@@ -36,7 +36,7 @@ export const schemaDelete = new GraphQLObjectType({
   }
 });
 
-export const query = {
+const query = {
   type: new GraphQLList(schema),
   description: 'Search for word translation',
   args: {
@@ -46,12 +46,11 @@ export const query = {
     }
   },
   resolve: (_, args, context) => {
-    console.log(context);
     return translation.findAll({ where: args });
   }
 };
 
-export const mutation = {
+const mutation = {
   addTranslation: {
     type: schema,
     description: 'Add new translation for the word',
@@ -79,4 +78,11 @@ export const mutation = {
     resolve: (_, args) => translation.destroy({ where: { id: args.translationId } })
       .then(() => ({ id: args.wordId }))
   }
+};
+
+module.exports = {
+  schema,
+  schemaDelete,
+  query,
+  mutation
 };

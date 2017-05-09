@@ -1,10 +1,10 @@
-import Sequelize from 'sequelize';
+const Sequelize = require('sequelize');
 
 const DATABASE_URL = process.env.DATABASE_URL || 'postgres://xzrqyaie:nikytyoKQU60ek_j6xx1lXXXMCb_YIS9@horton.elephantsql.com:5432/xzrqyaie';
 
 const db = new Sequelize(DATABASE_URL);
 
-export const user = db.define('user', {
+const user = db.define('user', {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV4,
@@ -20,7 +20,7 @@ export const user = db.define('user', {
   ]
 });
 
-export const word = db.define('word', {
+const word = db.define('word', {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV4,
@@ -36,7 +36,7 @@ export const word = db.define('word', {
   ]
 });
 
-export const translation = db.define('translation', {
+const translation = db.define('translation', {
   id: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV4,
@@ -67,4 +67,9 @@ word.hasMany(translation, {
 });
 translation.belongsTo(word);
 
-export default db;
+module.exports = {
+  default: db,
+  user: user,
+  word: word,
+  translation: translation
+};
