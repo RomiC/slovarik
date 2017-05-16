@@ -6,7 +6,10 @@ const {
   GraphQLString
 } = require('graphql');
 
-const { translation } = require('../db');
+const {
+  translation,
+  modelFields
+} = require('../db');
 
 const schema = new GraphQLObjectType({
   name: 'Translation',
@@ -45,9 +48,15 @@ const query = {
       description: 'Word translation'
     }
   },
-  resolve: (_, args, context) => {
-    return translation.findAll({ where: args });
-  }
+  resolve: (_, args, context, { fieldNodes }) => translation.findAll({
+    attributes: modelFields(
+      translation,
+      fieldNodes[0].selectionSet.selections
+        .filter(({ kind }) => kind === 'Field')
+        .map(({ name }) => name.value)
+    ),
+    where: args
+  })
 };
 
 const mutation = {

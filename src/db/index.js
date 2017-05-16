@@ -20,6 +20,14 @@ const user = db.define('user', {
   ]
 });
 
+const modelFields = (model, fields = []) =>
+  Object.keys(model.attributes)
+    .filter((field) => (
+      model.attributes[field].primaryKey === true ||
+      typeof model.attributes[field].references === 'object' ||
+      fields.indexOf(field) >= 0
+    ));
+
 const word = db.define('word', {
   id: {
     type: Sequelize.UUID,
@@ -69,7 +77,8 @@ translation.belongsTo(word);
 
 module.exports = {
   default: db,
-  user: user,
-  word: word,
-  translation: translation
+  user,
+  modelFields,
+  word,
+  translation
 };

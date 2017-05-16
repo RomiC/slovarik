@@ -5,10 +5,36 @@ const {
   GraphQLString,
   GraphQLList
 } = require('graphql');
+const DataLoader = require('dataloader');
 
-const { user } = require('../db');
+const {
+  user,
+  word,
+  modelFields
+} = require('../db');
 
 const { schema: WordType } = require('./word');
+
+
+const wordsLoader = new DataLoader((ids) => {
+  const userIds = [];
+  const wordFields = {};
+
+  ids.forEach(([uid, fields]) => {
+    userIds.push(uid);
+    fields.reduce((res, f) => (res[f] = true, res), wordFields);
+  });
+
+  return word.findAll({
+    attributes: Object.keys(wordFields),
+    where: { userId: { $in: userIds } }
+  })
+    .then((words) =>
+      ids.map(([uid]) =>
+        words.filter((w) => w.userId === uid)
+      )
+    );
+});
 
 const schema = new GraphQLObjectType({
   name: 'User',
@@ -27,7 +53,15 @@ const schema = new GraphQLObjectType({
     words: {
       type: new GraphQLList(WordType),
       description: 'User\'s words',
-      resolve: (u) => u.getWords()
+      resolve: (u, _, context, { fieldNodes }) => wordsLoader.load([
+        u.id,
+        modelFields(
+          word,
+          fieldNodes[0].selectionSet.selections
+            .filter(({ kind }) => kind === 'Field')
+            .map(({ name }) => name.value)
+       )
+      ])
     }
   }
 });
@@ -56,7 +90,15 @@ const query = {
       description: 'User Login to search'
     }
   },
-  resolve: (_, args) => user.findAll({ where: args })
+  resolve: (_, args, context, { fieldNodes }) => user.findAll({
+    attributes: modelFields(
+      user,
+      fieldNodes[0].selectionSet.selections
+        .filter(({ kind }) => kind === 'Field')
+        .map((selection) => selection.name.value)
+    ),
+    where: args
+  })
 };
 
 const mutation = {
@@ -78,7 +120,7 @@ const mutation = {
       userId: {
         type: new GraphQLNonNull(GraphQLID),
         description: 'User ID to delete'
-      } 
+      }
     },
     resolve: (_, args) => user.destroy({ where: { id: args.userId } })
       .then(() => ({ id: args.userId }))
