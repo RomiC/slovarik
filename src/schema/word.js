@@ -5,35 +5,17 @@ const {
   GraphQLID,
   GraphQLString
 } = require('graphql');
-const DataLoader = require('dataloader');
 
 const {
   word,
-  translation,
-  modelFields
+  translation
 } = require('../db');
+const {
+  modelFields,
+  getWordTranslations
+} = require('../db/utils');
 
 const { schema: TranslationType } = require('./translation');
-
-const translationsLoader = new DataLoader((ids) => {
-  const wordIds = [];
-  const translationFields = {};
-
-  ids.forEach(([wid, fields]) => {
-    wordIds.push(wid);
-    fields.reduce((res, f) => (res[f] = true, res), translationFields);
-  });
-
-  return translation.findAll({
-    attributes: Object.keys(translationFields),
-    where: { wordId: { $in: wordIds } }
-  })
-    .then((translations) =>
-      ids.map(([wid]) =>
-        translations.filter((t) => t.wordId === wid)
-      )
-    );
-})
 
 const schema = new GraphQLObjectType({
   name: 'Word',
@@ -52,7 +34,7 @@ const schema = new GraphQLObjectType({
     translations: {
       type: new GraphQLList(TranslationType),
       description: 'Word\'s translations',
-      resolve: (w, _, context, { fieldNodes }) => translationsLoader.load([
+      resolve: (w, _, context, { fieldNodes }) => getWordTranslations.load([
         w.id,
         modelFields(
           translation,

@@ -5,36 +5,17 @@ const {
   GraphQLString,
   GraphQLList
 } = require('graphql');
-const DataLoader = require('dataloader');
 
 const {
   user,
-  word,
-  modelFields
+  word
 } = require('../db');
+const {
+  modelFields,
+  getUserWords
+} = require('../db/utils');
 
 const { schema: WordType } = require('./word');
-
-
-const wordsLoader = new DataLoader((ids) => {
-  const userIds = [];
-  const wordFields = {};
-
-  ids.forEach(([uid, fields]) => {
-    userIds.push(uid);
-    fields.reduce((res, f) => (res[f] = true, res), wordFields);
-  });
-
-  return word.findAll({
-    attributes: Object.keys(wordFields),
-    where: { userId: { $in: userIds } }
-  })
-    .then((words) =>
-      ids.map(([uid]) =>
-        words.filter((w) => w.userId === uid)
-      )
-    );
-});
 
 const schema = new GraphQLObjectType({
   name: 'User',
@@ -52,8 +33,8 @@ const schema = new GraphQLObjectType({
     },
     words: {
       type: new GraphQLList(WordType),
-      description: 'User\'s words',
-      resolve: (u, _, context, { fieldNodes }) => wordsLoader.load([
+      description: 'User\'s vocabulary',
+      resolve: (u, _, context, { fieldNodes }) => getUserWords.load([
         u.id,
         modelFields(
           word,
