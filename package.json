@@ -16,7 +16,10 @@
     "express-graphql": "^0.6.4",
     "graphql": "^0.9.3",
     "graphql-relay": "^0.5.1",
+    "next": "^2.4.0",
     "pg": "^6.1.5",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
     "sequelize": "^3.30.4"
   },
   "devDependencies": {
