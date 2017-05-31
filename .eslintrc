@@ -1,14 +1,8 @@
 {
   "parserOptions": {
     "ecmaVersion": 6,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
+    "sourceType": "module"
   },
-  "plugins": [
-    "react"
-  ],
   "extends": [
     "eslint:recommended"
   ],
@@ -37,9 +31,7 @@
     }]
   },
   "env": {
-    "browser": true,
-    "commonjs": true,
-    "node": true,
-    "es6": true
+    "es6": true,
+    "node": true
   }
 }

@@ -1,7 +1,9 @@
-import Layout from '../components/layout';
+import 'semantic-ui-css/semantic.css';
+
+import { Button } from 'semantic-ui-react';
 
 export default () => (
-  <Layout>
-    <p>This is main page</p>
-  </Layout>
+  <Button>
+    Do it!
+  </Button>
 );

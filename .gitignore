@@ -36,5 +36,5 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
-# Next files
-client/src/.next
+# Client dist
+client/dist
