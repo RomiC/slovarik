@@ -1,9 +1,21 @@
-import 'semantic-ui-css/semantic.css';
+import React from 'react';
 
-import { Button } from 'semantic-ui-react';
+import {
+  Layout,
+  Menu
+} from 'element-react';
 
-export default () => (
-  <Button>
-    Do it!
-  </Button>
+const IndexPage = (
+  <div className="index">
+    <Menu mode="horizontal">
+      <Menu.Item index="1">Logout</Menu.Item>
+    </Menu>
+    <Layout.Row>
+      <Layout.Col span="24">
+        Slovarik is here!
+      </Layout.Col>
+    </Layout.Row>
+  </div>
 );
+
+export default IndexPage;

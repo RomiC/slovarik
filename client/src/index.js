@@ -1,14 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const RootComponent = () => (
-  <div>
-    <h1>Hello, World!</h1>
-    <p>one more element</p>
-  </div>
-);
+import Routings from './routings';
+
+import 'element-theme-default';
 
 ReactDOM.render(
-  <RootComponent />,
+  <Routings />,
   document.getElementById('root')
 );

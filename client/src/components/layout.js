@@ -1,7 +1,4 @@
-import Grid from 'react-uikit-grid';
-import Panel from 'react-uikit-panel';
-
-// import uikit from '../../../node_modules/uikit/dist/css/uikit.css';
+import React from 'react';
 
 export default (props) => (
   <Grid gutter="collapse">
